@@ -6,4 +6,6 @@ package it.filo.ooad.first;
  */
 public class Feature1Class {
     
+    // soluzione bug-1
+    
 }
