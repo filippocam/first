@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://www.dtt.it/xsd/PrenotaPatenteWS" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.dtt.it/xsd/PrenotaPatenteWS" targetNamespace="http://www.dtt.it/xsd/PrenotaPatenteWS">
+    <wsdl:types>
+        <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:dtt="http://www.dtt.it/xsd/PrenotaPatenteWS" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.dtt.it/xsd/PrenotaPatenteWS">
+            <element name="annullamentoPatenteRequest" type="dtt:AnnullamentoPatenteInputType">
+                <annotation>
+                    <documentation>
+                        E' l'elemento radice del file XML; contiene tutti i dati
+                        relativi alla richiesta della accettazione.
+                    </documentation>
+                </annotation>
+            </element>
+            <complexType name="AnnullamentoPatenteInputType">
+                <annotation>
+                    <documentation>
+                        Definisce i dati necessari a registrare l'annullamento
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <element name="dataRicezione" type="dtt:CharQuattordici"/>
+                    <element name="numeroPatente" type="dtt:FormatoPatenteType"/>
+                    <element name="numeroStrettaRendicontazione" type="string"/>
+                    <element name="causale" type="dtt:CausaleType"/>
+                    <element name="azione" type="dtt:AzioneType"/>
+                </sequence>
+            </complexType>
+            <simpleType name="FormatoPatenteType">
+                <restriction base="string">
+                    <minLength value="9"/>
+                    <maxLength value="10"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CausaleType">
+                <restriction base="string">
+                    <enumeration value="DANNEGGIAMENTO"/>
+                    <enumeration value="SMARRIMENTO_FURTO"/>
+                    <enumeration value="INESITATA"/>
+                    <enumeration value="ALTRO"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="AzioneType">
+                <restriction base="string">
+                    <enumeration value="RIGENERAZIONE"/>
+                    <enumeration value="RICREAZIONE"/>
+                </restriction>
+            </simpleType>
+            <complexType name="LoginType">
+                <annotation>
+                    <documentation>
+                        Definisce le credenziali di login: il codice pin utente
+                        e la password.
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <element minOccurs="0" name="codicePin" type="dtt:VarCharOtto"/>
+                </sequence>
+            </complexType>
+            <complexType name="ErroreType">
+                <sequence>
+                    <element minOccurs="0" name="codiceErrore" type="string"/>
+                    <element minOccurs="0" name="descrizioneErrore" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="MessaggioType">
+                <annotation>
+                    <documentation>
+                        Definisce i messaggi di risposta.
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <element maxOccurs="unbounded" minOccurs="0" name="codiceMessaggio" type="string"/>
+                    <element maxOccurs="unbounded" minOccurs="0" name="descrizioneMessaggio" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="ErrorType">
+                <annotation>
+                    <documentation>Definisce gli errori.</documentation>
+                </annotation>
+                <sequence>
+                    <element maxOccurs="unbounded" minOccurs="0" name="codiceErrore" type="string"/>
+                    <element maxOccurs="unbounded" minOccurs="0" name="descrizioneErrore" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="LuogoResidenzaType">
+                <sequence>
+                    <element name="provinciaResidenza" type="string"/>
+                    <element name="comuneResidenza" type="string"/>
+                    <element name="toponimoResidenza" type="dtt:VarCharSei"/>
+                    <element name="indirizzoResidenza" type="dtt:VarCharTrentaquattro"/>
+                    <element name="civicoResidenza" type="dtt:VarCharSei"/>
+                    <element name="capResidenza" type="dtt:VarCharCinque"/>
+                </sequence>
+            </complexType>
+            <complexType name="LuogoNascitaType">
+                <choice>
+                    <element name="luogoNascitaItaliano" type="dtt:LuogoNascitaItalianoType"/>
+                    <element name="luogoNascitaEstero" type="dtt:LuogoNascitaEsteroType"/>
+                </choice>
+            </complexType>
+            <complexType name="LuogoNascitaRicercaType">
+                <choice>
+                    <element name="luogoNascitaItaliano" type="dtt:LuogoNascitaItalianoType"/>
+                    <element name="luogoNascitaEstero" type="dtt:LuogoNascitaEsteroRicercaType"/>
+                </choice>
+            </complexType>
+            <complexType name="LuogoNascitaItalianoType">
+                <sequence>
+                    <element name="provinciaNascita" type="string"/>
+                    <element name="comuneNascita" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="LuogoNascitaEsteroType">
+                <sequence>
+                    <element name="localitaEsteraNascita" type="dtt:VarCharVentidue"/>
+                    <element name="statoEsteroNascita" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="LuogoNascitaEsteroRicercaType">
+                <sequence>
+                    <element name="statoEsteroNascita" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="AnagraficaRichiedenteType">
+                <sequence>
+                    <element minOccurs="0" name="nome" type="dtt:VarCharTrentacinqueMinLenghtZero"/>
+                    <element name="cognome" type="dtt:VarCharTrentacinque"/>
+                    <element minOccurs="0" name="tipoAnagraficaSpeciale" type="string"/>
+                    <element name="dataNascita" type="date"/>
+                    <element minOccurs="0" name="codiceFiscale" type="dtt:CharSedici"/>
+                    <element minOccurs="0" name="foto" nillable="true" type="dtt:FileType"/>
+                    <element minOccurs="0" name="firma" nillable="true" type="dtt:FileType"/>
+                    <element name="sesso" type="dtt:SessoType"/>
+                    <element name="luogoNascita" type="dtt:LuogoNascitaType"/>
+                </sequence>
+            </complexType>
+            <complexType name="AnagraficaCompattaType">
+                <sequence>
+                    <element minOccurs="0" name="nome" type="dtt:VarCharTrentacinqueMinLenghtZero"/>
+                    <element name="cognome" type="dtt:VarCharTrentacinque"/>
+                    <element minOccurs="0" name="tipoAnagraficaSpeciale" type="string"/>
+                    <element minOccurs="0" name="foto" type="dtt:FileType"/>
+                    <element minOccurs="0" name="firma" type="dtt:FileType"/>
+                </sequence>
+            </complexType>
+            <complexType name="DatiAnagraficiRicercaType">
+                <annotation>
+                    <documentation>
+                        Definisce i dati anagrafici da utilizzare nelle ricerche
+                        per anagrafica
+                    </documentation>
+                </annotation>
+                <sequence>
+                    <element minOccurs="0" name="nome" type="dtt:VarCharTrentacinqueMinLenghtZero"/>
+                    <element name="cognome" type="dtt:VarCharTrentacinque"/>
+                    <element minOccurs="0" name="tipoAnagraficaSpeciale" type="string"/>
+                    <element name="dataNascita" type="date"/>
+                    <element name="luogoNascita" type="dtt:LuogoNascitaRicercaType"/>
+                </sequence>
+            </complexType>
+            <complexType name="PatenteItalianaType">
+                <sequence>
+                    <element minOccurs="0" name="numeroPatente" nillable="true">
+                        <simpleType>
+                            <restriction base="string">
+                                <minLength value="9"/>
+                                <maxLength value="10"/>
+                                <whiteSpace value="collapse"/>
+                            </restriction>
+                        </simpleType>
+                    </element>
+                </sequence>
+            </complexType>
+            <simpleType name="MarcaOperativaType">
+                <annotation>
+                    <documentation>
+                        Definisce in generale il formato di una marca operativa.
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="10"/>
+                    <pattern value="[0-9][0-9][A-Za-z][A-Za-z][0-9][0-9][0-9][0-9][0-9][0-9]"/>
+                </restriction>
+            </simpleType>
+            <complexType name="TipoAnagraficaSpecialeType">
+                <sequence>
+                    <element minOccurs="0" name="tipoAnagraficaSpeciale" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="DatiBollettinoInserimentoType">
+                <sequence>
+                    <element name="numeroContoCorrente" type="string"/>
+                    <element name="codiceControllo" type="string"/>
+                    <element name="quartoCampo" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="DatiMediciType">
+                <sequence>
+                    <element name="dataVisitaMedica" type="date"/>
+                    <choice>
+                        <element minOccurs="0" name="codiceIscrizioneAlboMedici" type="string"/>
+                        <element minOccurs="0" name="codiceEnteSanitario" type="string"/>
+                    </choice>
+                </sequence>
+            </complexType>
+            <simpleType name="SiNoType">
+                <annotation>
+                    <documentation>
+                        Definisce la selezione dei valori S (si) e N (no).
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <enumeration value="S"/>
+                    <enumeration value="N"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="SessoType">
+                <restriction base="string">
+                    <enumeration value="F"/>
+                    <enumeration value="M"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="FileType">
+                <restriction base="base64Binary"/>
+            </simpleType>
+            <simpleType name="IndCategoriaAType">
+                <restriction base="string">
+                    <enumeration value=""/>
+                    <enumeration value="1"/>
+                    <enumeration value="2"/>
+                    <enumeration value="3"/>
+                    <enumeration value="4"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CambioManualeConvEsteraType">
+                <restriction base="string">
+                    <enumeration value="B"/>
+                    <enumeration value="C"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CategoriaDisponibileType">
+                <restriction base="string">
+                    <enumeration value=""/>
+                    <enumeration value="AM = AM"/>
+                    <enumeration value="AL = AMS"/>
+                    <enumeration value="AS"/>
+                    <enumeration value="A1 = A1"/>
+                    <enumeration value="A2 = A2"/>
+                    <enumeration value="A3 = A3"/>
+                    <enumeration value="A4 = A4"/>
+                    <enumeration value="B+ = B"/>
+                    <enumeration value="B = B"/>
+                    <enumeration value="BL = B1S"/>
+                    <enumeration value="BE = B + BE"/>
+                    <enumeration value="BS"/>
+                    <enumeration value="B1 = B1"/>
+                    <enumeration value="C = B + C"/>
+                    <enumeration value="CE = B + BE + C + CE"/>
+                    <enumeration value="CI = B + BE + C + C1E"/>
+                    <enumeration value="CS"/>
+                    <enumeration value="C1 = B + C1"/>
+                    <enumeration value="CL = C1S"/>
+                    <enumeration value="D = B + C + D"/>
+                    <enumeration value="DE = B + BE + C + CE + D + DE"/>
+                    <enumeration value="DI = B + BE + C + CE + D + D1E"/>
+                    <enumeration value="DK = B + BE + C + D + DE"/>
+                    <enumeration value="DS"/>
+                    <enumeration value="DX = BS + DS"/>
+                    <enumeration value="DW = B + D"/>
+                    <enumeration value="DY = B + BE + D"/>
+                    <enumeration value="DZ = B + BE + D + DE"/>
+                    <enumeration value="D1 = B + C1 + D1"/>
+                    <enumeration value="DL = D1S"/>
+                    <enumeration value="D9 = B + D1"/>
+                    <enumeration value="HE = B + BE + C1 + C1E"/>
+                    <enumeration value="JE = B + BE + D1 +D1E"/>
+                    <enumeration value="WE = B + BE + C + CE + D"/>
+                    <enumeration value="XE = B + BE + C"/>
+                    <enumeration value="YE = B + BE + C + D"/>
+                    <enumeration value="ZE = B + BE + C1 + D1 + C1E + D1E"/>
+                    <enumeration value="XI = B + BE + C1"/>
+                    <enumeration value="YI = B + BE + C + D1"/>
+                    <enumeration value="DM = B + BE + D1"/>
+                    <enumeration value="WI = B + BE + C + CE + D1"/>
+                    <enumeration value="DU = B + C + D1"/>
+                    <enumeration value="DM = B + BE + D1"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CategoriaRichiestaType">
+                <restriction base="string">
+                    <enumeration value=""/>
+                    <enumeration value="A1"/>
+                    <enumeration value="AS"/>
+                    <enumeration value="A2"/>
+                    <enumeration value="A3"/>
+                    <enumeration value="A4"/>
+                    <enumeration value="AM"/>
+                    <enumeration value="AL"/>
+                    <enumeration value="B "/>
+                    <enumeration value="BS"/>
+                    <enumeration value="B+"/>
+                    <enumeration value="B1"/>
+                    <enumeration value="BL"/>
+                    <enumeration value="BE"/>
+                    <enumeration value="C "/>
+                    <enumeration value="CS"/>
+                    <enumeration value="C1"/>
+                    <enumeration value="CL"/>
+                    <enumeration value="CE"/>
+                    <enumeration value="CI"/>
+                    <enumeration value="D "/>
+                    <enumeration value="DS"/>
+                    <enumeration value="D1"/>
+                    <enumeration value="DL"/>
+                    <enumeration value="D9"/>
+                    <enumeration value="DE"/>
+                    <enumeration value="DI"/>
+                    <enumeration value="DK"/>
+                    <enumeration value="DW"/>
+                    <enumeration value="DX"/>
+                    <enumeration value="DY"/>
+                    <enumeration value="DZ"/>
+                    <enumeration value="HE"/>
+                    <enumeration value="JE"/>
+                    <enumeration value="WE"/>
+                    <enumeration value="XE"/>
+                    <enumeration value="YE"/>
+                    <enumeration value="ZE"/>
+                    <enumeration value="XI"/>
+                    <enumeration value="YI"/>
+                    <enumeration value="DM"/>
+                    <enumeration value="WI"/>
+                    <enumeration value="DU"/>
+                </restriction>
+            </simpleType>
+            <complexType name="ElencoPrescrizioniTecnicheType">
+                <sequence>
+                    <element maxOccurs="8" minOccurs="0" name="PrescrizioniTecniche" type="dtt:PrescrizioniTecnicheType"/>
+                </sequence>
+            </complexType>
+            <complexType name="AnagraficaRichiedenteCQCType">
+                <sequence>
+                    <element name="cognome" type="dtt:VarCharTrentacinque"/>
+                    <element minOccurs="0" name="nome" type="dtt:VarCharTrentacinqueMinLenghtZero"/>
+                    <element minOccurs="0" name="tipoAnagraficaSpeciale" type="string"/>
+                    <element name="dataNascita" type="date"/>
+                    <element name="sesso" type="dtt:SessoType"/>
+                    <element minOccurs="0" name="codiceFiscale" type="dtt:CharSedici"/>
+                    <element name="foto" type="dtt:FileType"/>
+                </sequence>
+            </complexType>
+            <complexType name="LuogoResidenzaEsteraType">
+                <sequence>
+                    <element name="statoEsteroResidenza" type="string"/>
+                    <element minOccurs="0" name="localitaEsteraResidenza" nillable="true" type="dtt:VarCharVentidue"/>
+                    <element name="toponimoResidenza" type="dtt:VarCharSei"/>
+                    <element name="indirizzoResidenza" type="dtt:VarCharTrentaquattro"/>
+                    <element name="civicoResidenza" type="dtt:VarCharSei"/>
+                </sequence>
+            </complexType>
+            <complexType name="ElencoAbilitazioniPatenteType">
+                <sequence>
+                    <element maxOccurs="8" minOccurs="0" name="AbilitazioniPatente" type="dtt:AbilitazioniPatenteType"/>
+                </sequence>
+            </complexType>
+            <complexType name="PatenteCognomeRicercaType">
+                <sequence>
+                    <element name="patente" type="dtt:PatenteItalianaType"/>
+                    <element name="cognome" type="dtt:VarCharTrentacinque"/>
+                    <element minOccurs="0" name="tipoAnagraficaSpeciale" type="string"/>
+                </sequence>
+            </complexType>
+            <complexType name="PatenteCodiceFiscaleRicercaType">
+                <sequence>
+                    <element name="patente" type="dtt:PatenteItalianaType"/>
+                    <element name="codiceFiscale" type="dtt:CharSedici"/>
+                </sequence>
+            </complexType>
+            <complexType name="StatoDataInserimentoRicercaType">
+                <sequence>
+                    <element name="stato" type="dtt:StatoRichiestaRinnovoType"/>
+                    <element name="dataInserimentoDa" type="date"/>
+                    <element name="dataInserimentoA" type="date"/>
+                </sequence>
+            </complexType>
+            <simpleType name="CQCItalianaType">
+                <annotation>
+                    <documentation>
+                        Definisce in generale il formato di una CQC Italiana.
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="10"/>
+                    <pattern value="[A-Za-z][A-Za-z][Qq][0-9][0-9][0-9][0-9][0-9][0-9][A-Za-z]"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="AbilitazioniPatenteType">
+                <restriction base="string">
+                    <enumeration value="C "/>
+                    <enumeration value="CE"/>
+                    <enumeration value="C1"/>
+                    <enumeration value="D "/>
+                    <enumeration value="DE"/>
+                    <enumeration value="D1"/>
+                    <enumeration value="C1E"/>
+                    <enumeration value="D1E"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="PrescrizioniTecnicheType">
+                <restriction base="string">
+                    <enumeration value=""/>
+                    <enumeration value="COPRI OCCHIO"/>
+                    <enumeration value="GUIDA ACCOMPAGNATO DA TITOLARE DI PATENTE"/>
+                    <enumeration value="GUIDA IN ORARIO DIURNO"/>
+                    <enumeration value="GUIDA NON AUTORIZZATA IN AUTOSTRADA"/>
+                    <enumeration value="GUIDA SENZA PASSEGGERI"/>
+                    <enumeration value="GUIDA SENZA RIMORCHIO"/>
+                    <enumeration value="LENTE OPACA"/>
+                    <enumeration value="LENTE PROTETTIVA"/>
+                    <enumeration value="LENTI A CONTATTO"/>
+                    <enumeration value="NIENTE ALCOOL"/>
+                    <enumeration value="OCCHIALI"/>
+                    <enumeration value="OCCHIALI O LENTI A CONTATTO"/>
+                    <enumeration value="PERCORSO LIMITATO"/>
+                    <enumeration value="PROTESI UDITIVA"/>
+                    <enumeration value="PROTESI UDITIVA AD ENTRAMBE LE ORECCHIE"/>
+                    <enumeration value="PROTESI UDITIVA AD UN ORECCHIO"/>
+                    <enumeration value="VELOCITA' DI GUIDA LIMITATA"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharDue">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 2 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="2"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharQuattro">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 4 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="4"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharCinque">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 5 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="5"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharSei">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 6 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="6"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharOtto">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 8 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="8"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharDieci">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 10 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="10"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharSedici">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 16 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="16"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="CharQuattordici">
+                <annotation>
+                    <documentation>
+                        Definisce i vincoli da rispettare per l'inserimento di
+                        una stringa di 14 caratteri
+                    </documentation>
+                </annotation>
+                <restriction base="string">
+                    <length value="14"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharOtto">
+                <restriction base="string">
+                    <maxLength value="10"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharDieci">
+                <restriction base="string">
+                    <maxLength value="10"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharDodici">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="12"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharVentidue">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="22"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharTrentaquattro">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="34"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharTrentacinque">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="35"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharTrentacinqueMinLenghtZero">
+                <restriction base="string">
+                    <minLength value="0"/>
+                    <maxLength value="35"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharTrenta">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="30"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharCinque">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="5"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="VarCharSei">
+                <restriction base="string">
+                    <minLength value="1"/>
+                    <maxLength value="6"/>
+                    <whiteSpace value="collapse"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="TipologiaPagamentoType">
+                <restriction base="string">
+                    <enumeration value="BOLLETTINO"/>
+                    <enumeration value="CARRELLO"/>
+                    <enumeration value="NESSUN PAGAMENTO"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="TipologiaPagamentoInserimentoType">
+                <restriction base="string">
+                    <enumeration value="BOLLETTINO"/>
+                    <enumeration value="CARRELLO"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="UrgenzaBollettinoType">
+                <restriction base="string">
+                    <enumeration value="URGENTE"/>
+                    <enumeration value=""/>
+                </restriction>
+            </simpleType>
+            <simpleType name="StatoPrenotazioneCommonType">
+                <restriction base="string">
+                    <enumeration value="APPROVATA"/>
+                    <enumeration value="RIVEDERE"/>
+                    <enumeration value="INSERITA"/>
+                    <enumeration value="RIFIUTATA"/>
+                    <enumeration value="RILASCIATA"/>
+                    <enumeration value="BLOCCATA DA RICHIESTA"/>
+                    <enumeration value="BLOCCATA DA UP"/>
+                    <enumeration value="CANCELLATA"/>
+                    <enumeration value="PAGATA NON PRENOTABILE"/>
+                    <enumeration value="DA PAGARE"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="StatoRichiestaRinnovoType">
+                <restriction base="string">
+                    <enumeration value="PRIMA FASE RINNOVO COMPLETATA"/>
+                    <enumeration value="ATTIVO"/>
+                    <enumeration value="ANNULLATO AG-AU CON CREDITO"/>
+                    <enumeration value="ANNULLATO DA MEDICO CON CREDITO"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="MotivoRichiestaType">
+                <restriction base="string">
+                    <enumeration value="RINNOVO"/>
+                </restriction>
+            </simpleType>
+            <simpleType name="SiType">
+                <restriction base="string">
+                    <enumeration value="S"/>
+                </restriction>
+            </simpleType>
+            <element name="annullamentoPatenteResponse" type="dtt:AnnullamentoPatenteOutputType">
+                <annotation>
+                    <documentation>
+                        E' l'elemento radice del file XML; contiene tutti i dati
+                        relativi alla richiesta della accettazione.
+                    </documentation>
+                </annotation>
+            </element>
+            <complexType name="AnnullamentoPatenteOutputType">
+                <choice>
+                    <element minOccurs="0" name="messaggio" type="dtt:MessaggioType"/>
+                    <element minOccurs="0" name="errore" type="dtt:ErrorType"/>
+                </choice>
+            </complexType>
+        </schema>
+    </wsdl:types>
+    <wsdl:message name="annullamentoPatenteResponse">
+        <wsdl:part element="tns:annullamentoPatenteResponse" name="annullamentoPatenteResponse">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="annullamentoPatenteRequest">
+        <wsdl:part element="tns:annullamentoPatenteRequest" name="annullamentoPatenteRequest">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="annullamentoPatente">
+        <wsdl:operation name="annullamentoPatente">
+            <wsdl:input message="tns:annullamentoPatenteRequest" name="annullamentoPatenteRequest">
+            </wsdl:input>
+            <wsdl:output message="tns:annullamentoPatenteResponse" name="annullamentoPatenteResponse">
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="annullamentoPatenteSoap11" type="tns:annullamentoPatente">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="annullamentoPatente">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="annullamentoPatenteRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="annullamentoPatenteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="annullamentoPatenteService">
+        <wsdl:port binding="tns:annullamentoPatenteSoap11" name="annullamentoPatenteSoap11">
+            <soap:address location="http://e-servizicoll.apps.dtt:80/PrenotaPatente-ws/services/annullamentoPatente/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
