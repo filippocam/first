@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/C:/WORKSPACE/gara-patenti-fase-2/sim-bundle-fase-2/src/main/resources/META-INF/wsdl/annullamentoPatente.wsdl" uri="wsdl/annullamentoPatente.wsdl"/>
+</catalog>
