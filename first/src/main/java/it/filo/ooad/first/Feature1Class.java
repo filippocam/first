@@ -10,7 +10,10 @@ public class Feature1Class {
     // zdadad
     
     public static void main(String[] args) {
-        System.out.println("args = " + args);
+        System.out.println("argsssssss = " + args);
+        
+        int a = 1;
+        System.out.println("bug 43 = " + a);
     }
     
 }
