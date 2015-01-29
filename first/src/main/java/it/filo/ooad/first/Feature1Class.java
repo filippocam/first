@@ -5,7 +5,7 @@ package it.filo.ooad.first;
  * @author filippo.campegiani
  */
 public class Feature1Class {
-    // soluzione bug-1
+    // soluzione bug-1 e bug-43
     
     // zdadad
     
